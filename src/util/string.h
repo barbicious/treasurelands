@@ -3,8 +3,8 @@
 #include "types.h"
 
 typedef struct {
-    char* raw;
+    char *raw;
     u32 len;
 } string_s;
 
-string_s string_create(char* string);
+string_s string_create(char *string);

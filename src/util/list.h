@@ -18,7 +18,7 @@
 do {\
     if (list.length >= list.capacity) {\
         list.capacity *= 2;\
-        void* tmp = realloc(list.items, LIST_SIZE(list));\
+        void *tmp = realloc(list.items, LIST_SIZE(list));\
         if (tmp == nullptr) {\
             LIST_FREE(list);\
         } else {\

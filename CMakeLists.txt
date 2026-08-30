@@ -11,7 +11,13 @@ FetchContent_Declare(
         GIT_TAG master
 )
 
-FetchContent_MakeAvailable(glfw)
+FetchContent_Declare(
+        cglm
+        GIT_REPOSITORY https://github.com/recp/cglm
+        GIT_TAG master
+)
+
+FetchContent_MakeAvailable(glfw cglm)
 
 add_executable(treasurelands src/main.c src/util/list.h
         src/util/types.h
@@ -22,8 +28,22 @@ add_executable(treasurelands src/main.c src/util/list.h
         vendor/glad/src/glad.c
         src/context.c
         src/context.h
+        src/gfx/shader.c
+        src/gfx/shader.h
+        src/gfx/vao.c
+        src/gfx/vao.h
+        src/gfx/vbo.c
+        src/gfx/vbo.h
+        src/gfx/texture.c
+        src/gfx/texture.h
 )
 
-target_link_libraries(treasurelands PRIVATE glfw)
+add_custom_command(TARGET treasurelands POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/res
+        $<TARGET_FILE_DIR:treasurelands>/res
+)
 
-target_include_directories(treasurelands PRIVATE vendor/glad/include)
+target_link_libraries(treasurelands PRIVATE glfw cglm)
+
+target_include_directories(treasurelands PRIVATE vendor/glad/include vendor)
