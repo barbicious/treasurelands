@@ -5,7 +5,7 @@
 #include <glad/glad.h>
 #include "GLFW/glfw3.h"
 
-window_s window_create(const s32 width, const s32 height, const string_s title) {
+window_s window_create(const i32 width, const i32 height, const string_s title) {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
