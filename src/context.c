@@ -10,6 +10,8 @@
 #include "gfx/vbo.h"
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
+#include "lvl/chunk_mesh.h"
+#include "lvl/tile.h"
 
 context_s context_create() {
     window_create(1280, 720, string_create("Treasurelands"));
@@ -18,21 +20,9 @@ context_s context_create() {
 }
 
 void context_run(context_s *context) {
-    constexpr f32 vertices[] = {
-        -2.5f, -2.5f, 0.0f, 0.0f, 0.0f,
-        2.5f, -2.5f, 0.0f, 1.0f, 0.0f,
-        2.5f, 2.5f, 0.0f, 1.0f, 1.0f,
-        2.5f, 2.5f, 0.0f, 1.0f, 1.0f,
-        -2.5f, 2.5f, 0.0f, 0.0f, 1.0f,
-        -2.5f, -2.5f, 0.0f, 0.0f, 0.0f,
-    };
+    glEnable(GL_DEPTH_TEST);
 
-    vao_s vao = vao_create();
-    vao_bind(&vao);
-
-    vbo_s vbo = vbo_create();
-    vbo_bind(&vbo);
-    vbo_submit_data(&vbo, sizeof(vertices), vertices);
+    chunk_mesh_s chunk_mesh = chunk_mesh_create();
 
     vao_attribute(0, 3, 5 * sizeof(f32), 0);
     vao_attribute(1, 2, 5 * sizeof(f32), 3 * sizeof(f32));
@@ -53,7 +43,7 @@ void context_run(context_s *context) {
 
     mat4 view = GLM_MAT4_IDENTITY_INIT;
 
-    f32 pitch = 0.0f, yaw = 90.0f;
+    f32 pitch = 0.0f, yaw = -90.0f;
 
     while (window_is_good()) {
         if (window_is_key_pressed(GLFW_KEY_ESCAPE)) {
@@ -110,13 +100,14 @@ void context_run(context_s *context) {
         glm_lookat(camera_position, camera_center, camera_up, view);
         shader_set_mat4(&shader, "u_view", view);
 
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0.8f, 0.6f, 0.1f, 1.0f);
 
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        chunk_mesh_blit(&chunk_mesh);
 
         window_display();
     }
 
+    chunk_mesh_destroy(&chunk_mesh);
     window_destroy();
 }

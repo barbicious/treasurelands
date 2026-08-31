@@ -1,6 +1,5 @@
 #pragma once
 
-#include "vbo.h"
 #include "../util/types.h"
 
 typedef struct {

@@ -36,6 +36,12 @@ add_executable(treasurelands src/main.c src/util/list.h
         src/gfx/vbo.h
         src/gfx/texture.c
         src/gfx/texture.h
+        src/core/camera.c
+        src/core/camera.h
+        src/lvl/tile.c
+        src/lvl/tile.h
+        src/lvl/chunk_mesh.c
+        src/lvl/chunk_mesh.h
 )
 
 add_custom_command(TARGET treasurelands POST_BUILD

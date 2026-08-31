@@ -5,6 +5,8 @@
 #include "glad/glad.h"
 
 texture_s texture_load(const char *path) {
+    stbi_set_flip_vertically_on_load(true);
+
     texture_s texture = {0};
 
     glGenTextures(1, &texture.id);
