@@ -1,8 +1,8 @@
 #pragma once
-
-#include "core/window.h"
+#include "lvl/level.h"
 
 typedef struct {
+    level_s level;
 } context_s;
 
 context_s context_create();
