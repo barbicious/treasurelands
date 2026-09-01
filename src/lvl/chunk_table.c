@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static constexpr usize initial_capacity = 16;
+static constexpr usize initial_capacity = 100;
 
 static bool chunk_cmp(chunk_s *chunk, i32 x, i32 y, i32 z) {
     return chunk->x == x && chunk->y == y && chunk->z == z;
@@ -96,13 +96,15 @@ static void chunk_table_resize(chunk_table_s *table, u64 hash, chunk_s *chunk) {
             fprintf(stderr, "chunk_table_set: capacity overflow, hashtable got too big\n");
         }
 
+        entry_s *old_entries = table->entries;
+
         entry_s *entries = calloc(new_capacity, sizeof(entry_s));
         if (entries == nullptr) {
             fprintf(stderr, "chunk_table_set: calloc() failed\n");
             exit(EXIT_FAILURE);
         }
 
-        for (usize i = 0; i < table->length; i++) {
+        for (usize i = 0; i < table->capacity; i++) {
             const entry_s entry = table->entries[i];
             if (entry.chunk != nullptr) {
                 chunk_table_set_entry(table, hash, entry.chunk);
