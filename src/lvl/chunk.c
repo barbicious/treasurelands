@@ -60,3 +60,11 @@ void chunk_set_tile(chunk_s *chunk, usize x, usize y, usize z, tile_type_e tile_
     chunk_mesh_destroy(&chunk->mesh);
     chunk->mesh = chunk_mesh_create(chunk, chunk->x, chunk->y, chunk->z);
 }
+
+i32 chunk_coordinates(f32 n) {
+    if (n < 0) {
+        return ((i32)(n - 1) / chunk_width) - 1;
+    } else {
+        return (i32)n / chunk_width;
+    }
+}

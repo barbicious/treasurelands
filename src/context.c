@@ -110,12 +110,18 @@ void context_run(context_s *context) {
             while (ray_distance(&ray) < 6.0) {
                 ray_step(&ray, 0.05f);
 
-                chunk_s *c = chunk_table_get(&context->level.chunk_table, (i32)ray.end[0] / chunk_width, (i32)ray.end[1] / chunk_width, (i32)ray.end[2] / chunk_width);
+                chunk_s *c = chunk_table_get(&context->level.chunk_table, chunk_coordinates(ray.end[0]), chunk_coordinates(ray.end[1]), chunk_coordinates(ray.end[2]));
 
-                tile_type_e tile_type = chunk_tile_at(c, (i32)ray.end[0] % chunk_width, (i32)ray.end[1] % chunk_width, (i32)ray.end[2] % chunk_width);
+                i32 tile_x = 0, tile_y = 0, tile_z = 0;
+
+                CHUNK_TILE_POS(tile_x, 0);
+                CHUNK_TILE_POS(tile_y, 1);
+                CHUNK_TILE_POS(tile_z, 2);
+
+                tile_type_e tile_type = chunk_tile_at(c, tile_x, tile_y, tile_z);
 
                 if (tile_type != tile_type_air) {
-                    chunk_set_tile(c, (i32)ray.end[0] % chunk_width, (i32)ray.end[1] % chunk_width, (i32)ray.end[2] % chunk_width, tile_type_air);
+                    chunk_set_tile(c, tile_x, tile_y, tile_z, tile_type_air);
                     break;
                 }
             }
@@ -128,14 +134,28 @@ void context_run(context_s *context) {
             while (ray_distance(&ray) < 6.0) {
                 ray_step(&ray, 0.05f);
 
-                chunk_s *c = chunk_table_get(&context->level.chunk_table, (i32)ray.end[0] / chunk_width, (i32)ray.end[1] / chunk_width, (i32)ray.end[2] / chunk_width);
+                chunk_s *c = chunk_table_get(&context->level.chunk_table, chunk_coordinates(ray.end[0]), chunk_coordinates(ray.end[1]), chunk_coordinates(ray.end[2]));
 
-                tile_type_e tile_type = chunk_tile_at(c, ray.end[0], ray.end[1], ray.end[2]);
+                i32 tile_x = 0, tile_y = 0, tile_z = 0;
+
+                CHUNK_TILE_POS(tile_x, 0);
+                CHUNK_TILE_POS(tile_y, 1);
+                CHUNK_TILE_POS(tile_z, 2);
+
+                tile_type_e tile_type = chunk_tile_at(c, tile_x, tile_y, tile_z);
+
+                printf("%d %d %d\n", tile_x, tile_y, tile_z);
 
                 if (tile_type != tile_type_air) {
                     ray_step(&ray, -0.05f);
 
-                    chunk_set_tile(c, ray.end[0], ray.end[1], ray.end[2], tile_type_grass);
+                    c = chunk_table_get(&context->level.chunk_table, chunk_coordinates(ray.end[0]), chunk_coordinates(ray.end[1]), chunk_coordinates(ray.end[2]));
+
+                    CHUNK_TILE_POS(tile_x, 0);
+                    CHUNK_TILE_POS(tile_y, 1);
+                    CHUNK_TILE_POS(tile_z, 2);
+
+                    chunk_set_tile(c, tile_x, tile_y, tile_z, tile_type_grass);
                     break;
                 }
             }
