@@ -1,57 +1,6 @@
 #include "tile.h"
 
 #include <stdio.h>
-
-#define TILE_IMPL(name, texture_x, texture_y)\
-    const f32 front_##name##_vertices[] = {\
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,\
-         0.5f, -0.5f, -0.5f,  texture_x / atlas_width, 0.0f,\
-         0.5f,  0.5f, -0.5f,  texture_x / atlas_width, texture_y / atlas_height,\
-         0.5f,  0.5f, -0.5f,  texture_x / atlas_width, texture_y / atlas_height,\
-        -0.5f,  0.5f, -0.5f,  0.0f, texture_y / atlas_height,\
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,\
-    };\
-    const f32 back_##name##_vertices[] = {\
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,\
-         0.5f, -0.5f,  0.5f,  texture_x / atlas_width, 0.0f,\
-         0.5f,  0.5f,  0.5f,  texture_x / atlas_width, texture_y / atlas_height,\
-         0.5f,  0.5f,  0.5f,  texture_x / atlas_width, texture_y / atlas_height,\
-        -0.5f,  0.5f,  0.5f,  0.0f, texture_y / atlas_height,\
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,\
-    };\
-    const f32 left_##name##_vertices[] = {\
-        -0.5f,  0.5f,  0.5f,  texture_x / atlas_width, 0.0f,\
-        -0.5f,  0.5f, -0.5f,  texture_x / atlas_width, texture_y / atlas_height,\
-        -0.5f, -0.5f, -0.5f,  0.0f, texture_y / atlas_height,\
-        -0.5f, -0.5f, -0.5f,  0.0f, texture_y / atlas_height,\
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,\
-        -0.5f,  0.5f,  0.5f,  texture_x / atlas_width, 0.0f,\
-    };\
-    const f32 right_##name##_vertices[] = {\
-         0.5f,  0.5f,  0.5f,  texture_x / atlas_width, 0.0f,\
-         0.5f,  0.5f, -0.5f,  texture_x / atlas_width, texture_y / atlas_height,\
-         0.5f, -0.5f, -0.5f,  0.0f, texture_y / atlas_height,\
-         0.5f, -0.5f, -0.5f,  0.0f, texture_y / atlas_height,\
-         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,\
-         0.5f,  0.5f,  0.5f,  texture_x / atlas_width, 0.0f,\
-    };\
-    const f32 bottom_##name##_vertices[] = {\
-        -0.5f, -0.5f, -0.5f,  0.0f, texture_y / atlas_height,\
-         0.5f, -0.5f, -0.5f,  texture_x / atlas_width, texture_y / atlas_height,\
-         0.5f, -0.5f,  0.5f,  texture_x / atlas_width, 0.0f,\
-         0.5f, -0.5f,  0.5f,  texture_x / atlas_width, 0.0f,\
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,\
-        -0.5f, -0.5f, -0.5f,  0.0f, texture_y / atlas_height,\
-    };\
-    const f32 top_##name##_vertices[] = {\
-        -0.5f,  0.5f, -0.5f,  0.0f, texture_y / atlas_height,\
-         0.5f,  0.5f, -0.5f,  texture_x / atlas_width, texture_y / atlas_height,\
-         0.5f,  0.5f,  0.5f,  texture_x / atlas_width, 0.0f,\
-         0.5f,  0.5f,  0.5f,  texture_x / atlas_width, 0.0f,\
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,\
-        -0.5f,  0.5f, -0.5f,  0.0f, texture_y / atlas_height\
-    };
-
 f32 *tile_vertices(tile_type_e tile_type, face_e face, f32 x, f32 y, f32 z, f32 vertices[vertices_per_face]) {
     f32 u = 0.0f, v = 0.0f;
 
@@ -82,23 +31,23 @@ f32 *tile_vertices(tile_type_e tile_type, face_e face, f32 x, f32 y, f32 z, f32 
         break;
         case face_top: {
             vertices = (f32[]){
-                x,        y + 1.0f,        z, u, v,
-                x + 1.0f, y + 1.0f,        z, full_u, v,
-                x + 1.0f, y + 1.0f, z + 1.0f, full_u, full_v,
-                x + 1.0f, y + 1.0f, z + 1.0f, full_u, full_v,
-                x,        y + 1.0f, z + 1.0f, u, full_v,
-                x,        y + 1.0f,        z, u, v,
+                x + 1.0f, y + 1.0f,        z, u, v,
+                x,        y + 1.0f,        z, full_u, v,
+                x,        y + 1.0f, z + 1.0f, full_u, full_v,
+                x,        y + 1.0f, z + 1.0f, full_u, full_v,
+                x + 1.0f, y + 1.0f, z + 1.0f, u, full_v,
+                x + 1.0f, y + 1.0f,        z, u, v,
             };
         }
         break;
         case face_front: {
             vertices = (f32[]){
-                x,        y,        z, u, v,
-                x + 1.0f, y,        z, full_u, v,
-                x + 1.0f, y + 1.0f, z, full_u, full_v,
-                x + 1.0f, y + 1.0f, z, full_u, full_v,
-                x,        y + 1.0f, z, u, full_v,
-                x,        y,        z, u, v,
+                x + 1.0f,        y,        z, u, v,
+                x, y,        z, full_u, v,
+                x, y + 1.0f, z, full_u, full_v,
+                x, y + 1.0f, z, full_u, full_v,
+                x + 1.0f,        y + 1.0f, z, u, full_v,
+                x + 1.0f,        y,        z, u, v,
             };
         }
         break;
@@ -117,12 +66,12 @@ f32 *tile_vertices(tile_type_e tile_type, face_e face, f32 x, f32 y, f32 z, f32 
 
         case face_left: {
             vertices = (f32[]){
-                x,        y,        z, u, v,
-                x, y + 1.0f,        z, full_u, v,
-                x, y + 1.0f, z + 1.0f, full_u, full_v,
-                x, y + 1.0f, z + 1.0f, full_u, full_v,
-                x,        y, z + 1.0f, u, full_v,
-                x,        y,        z, u, v,
+                x,        y + 1.0f,        z, u, v,
+                x, y,        z, full_u, v,
+                x, y, z + 1.0f, full_u, full_v,
+                x, y, z + 1.0f, full_u, full_v,
+                x,        y + 1.0f, z + 1.0f, u, full_v,
+                x,        y + 1.0f,        z, u, v,
             };
         }
         break;

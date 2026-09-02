@@ -26,6 +26,7 @@ context_s context_create() {
 
 void context_run(context_s *context) {
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
 
     const shader_s shader = shader_create("res/shd/cube.vert", "res/shd/cube.frag");
     shader_bind(&shader);
@@ -37,7 +38,7 @@ void context_run(context_s *context) {
     texture_s texture = texture_load("res/treasurelands_atlas.png");
     texture_bind(&texture);
 
-    vec3 camera_position = {0.0f, 0.0f, 0.0f};
+    vec3 camera_position = {0.0f, 7.0f, 0.0f};
     vec3 camera_front = {0.0f, 0.0f, -1.0f};
     vec3 camera_up = {0.0f, 1.0f, 0.0f};
 
@@ -109,12 +110,12 @@ void context_run(context_s *context) {
             while (ray_distance(&ray) < 6.0) {
                 ray_step(&ray, 0.05f);
 
-                chunk_s *c = chunk_table_get(&context->level.chunk_table, 0, 0, 0);
+                chunk_s *c = chunk_table_get(&context->level.chunk_table, (i32)ray.end[0] / chunk_width, (i32)ray.end[1] / chunk_width, (i32)ray.end[2] / chunk_width);
 
-                tile_type_e tile_type = chunk_tile_at(c, ray.end[0], ray.end[1], ray.end[2]);
+                tile_type_e tile_type = chunk_tile_at(c, (i32)ray.end[0] % chunk_width, (i32)ray.end[1] % chunk_width, (i32)ray.end[2] % chunk_width);
 
                 if (tile_type != tile_type_air) {
-                    chunk_set_tile(c, ray.end[0], ray.end[1], ray.end[2], tile_type_air);
+                    chunk_set_tile(c, (i32)ray.end[0] % chunk_width, (i32)ray.end[1] % chunk_width, (i32)ray.end[2] % chunk_width, tile_type_air);
                     break;
                 }
             }
@@ -127,7 +128,7 @@ void context_run(context_s *context) {
             while (ray_distance(&ray) < 6.0) {
                 ray_step(&ray, 0.05f);
 
-                chunk_s *c = chunk_table_get(&context->level.chunk_table, 0, 0, 0);
+                chunk_s *c = chunk_table_get(&context->level.chunk_table, (i32)ray.end[0] / chunk_width, (i32)ray.end[1] / chunk_width, (i32)ray.end[2] / chunk_width);
 
                 tile_type_e tile_type = chunk_tile_at(c, ray.end[0], ray.end[1], ray.end[2]);
 
