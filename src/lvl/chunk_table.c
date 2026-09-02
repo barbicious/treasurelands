@@ -27,7 +27,7 @@ chunk_table_s chunk_table_create() {
     table.entries = calloc(table.capacity, sizeof(entry_s));
     if (table.entries == nullptr) {
         fprintf(stderr, "chunk_table_create: calloc() failed\n");
-        exit(-1);
+        exit(EXIT_FAILURE);
     }
 
     return table;

@@ -104,3 +104,7 @@ f32 delta_time() {
     last_time = (f32) glfwGetTime();
     return delta_time;
 }
+
+bool window_is_mouse_pressed(i32 key) {
+    return glfwGetMouseButton(window.raw, key) == GLFW_PRESS;
+}

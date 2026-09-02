@@ -48,6 +48,8 @@ add_executable(treasurelands src/main.c src/util/list.h
         src/lvl/level.h
         src/lvl/chunk_table.c
         src/lvl/chunk_table.h
+        src/math/ray.c
+        src/math/ray.h
 )
 
 add_custom_command(TARGET treasurelands POST_BUILD

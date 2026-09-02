@@ -12,7 +12,9 @@ constexpr usize faces = 6;
 constexpr usize total_vertices = vertices_per_face * faces;
 
 typedef enum : u8 {
+    tile_type_air,
     tile_type_grass,
+    tile_type_stone,
 } tile_type_e;
 
 typedef enum : u8 {

@@ -14,6 +14,7 @@
 #include "lvl/chunk_mesh.h"
 #include "lvl/chunk_table.h"
 #include "lvl/tile.h"
+#include "math/ray.h"
 
 context_s context_create() {
     window_create(1280, 720, string_create("Treasurelands"));
@@ -25,11 +26,6 @@ context_s context_create() {
 
 void context_run(context_s *context) {
     glEnable(GL_DEPTH_TEST);
-
-    chunk_table_s chunk_table = chunk_table_create();
-    chunk_table_set(&chunk_table, chunk_create(-1, -1, -1));
-    chunk_s *chunk = chunk_table_get(&chunk_table, -1, -1, -1);
-    chunk_table_destroy(&chunk_table);
 
     const shader_s shader = shader_create("res/shd/cube.vert", "res/shd/cube.frag");
     shader_bind(&shader);
@@ -48,6 +44,10 @@ void context_run(context_s *context) {
     mat4 view = GLM_MAT4_IDENTITY_INIT;
 
     f32 pitch = 0.0f, yaw = -90.0f;
+
+    vec3 camera_rotation = {0.0f, 0.0f, 0.0f};
+
+    f32 last_lbutton = 0.0f;
 
     while (window_is_good()) {
         if (window_is_key_pressed(GLFW_KEY_ESCAPE)) {
@@ -88,7 +88,10 @@ void context_run(context_s *context) {
             yaw += x_offset;
             pitch += y_offset;
 
-            pitch = glm_clamp(pitch, -90.0f, 90.0f);
+            pitch = glm_clamp(pitch, -89.0f, 89.0f);
+
+            camera_rotation[0] += (x_offset);
+            camera_rotation[1] += (y_offset);
 
             vec3 dir = {
                 cosf(glm_rad(yaw)) * cosf(glm_rad(pitch)),
@@ -97,6 +100,44 @@ void context_run(context_s *context) {
             };
             glm_normalize(dir);
             memcpy(camera_front, dir, sizeof(dir));
+        }
+
+        if (window_is_mouse_pressed(GLFW_MOUSE_BUTTON_LEFT) && glfwGetTime() - last_lbutton > 0.2f) {
+            last_lbutton = (f32)glfwGetTime();
+            ray_s ray = ray_create(camera_position, camera_rotation);
+
+            while (ray_distance(&ray) < 6.0) {
+                ray_step(&ray, 0.05f);
+
+                chunk_s *c = chunk_table_get(&context->level.chunk_table, 0, 0, 0);
+
+                tile_type_e tile_type = chunk_tile_at(c, ray.end[0], ray.end[1], ray.end[2]);
+
+                if (tile_type != tile_type_air) {
+                    chunk_set_tile(c, ray.end[0], ray.end[1], ray.end[2], tile_type_air);
+                    break;
+                }
+            }
+        }
+
+        if (window_is_mouse_pressed(GLFW_MOUSE_BUTTON_RIGHT) && glfwGetTime() - last_lbutton > 0.2f) {
+            last_lbutton = (f32)glfwGetTime();
+            ray_s ray = ray_create(camera_position, camera_rotation);
+
+            while (ray_distance(&ray) < 6.0) {
+                ray_step(&ray, 0.05f);
+
+                chunk_s *c = chunk_table_get(&context->level.chunk_table, 0, 0, 0);
+
+                tile_type_e tile_type = chunk_tile_at(c, ray.end[0], ray.end[1], ray.end[2]);
+
+                if (tile_type != tile_type_air) {
+                    ray_step(&ray, -0.05f);
+
+                    chunk_set_tile(c, ray.end[0], ray.end[1], ray.end[2], tile_type_grass);
+                    break;
+                }
+            }
         }
 
         vec3 camera_center = {0.0f, 0.0f, 0.0f};

@@ -30,5 +30,6 @@ void window_display();
 bool window_is_key_down(i32 key);
 bool window_is_key_pressed(i32 key);
 f32 delta_time();
+bool window_is_mouse_pressed(i32 key);
 
 extern window_s window;

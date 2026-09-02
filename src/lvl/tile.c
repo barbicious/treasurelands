@@ -60,6 +60,10 @@ f32 *tile_vertices(tile_type_e tile_type, face_e face, f32 x, f32 y, f32 z, f32 
             u = 0.0f / atlas_width;
             v = 0.0f / atlas_height;
             break;
+        case tile_type_stone:
+            u = 8.0f / atlas_width;
+            v = 0.0f / atlas_height;
+            break;
     }
 
     f32 full_u = 8.0f / atlas_width + u, full_v = 8.0f / atlas_height + v;
